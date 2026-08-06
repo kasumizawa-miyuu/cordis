@@ -3,12 +3,12 @@ import { createServer } from "node:http";
 import express from "express";
 import { Server as SocketIOServer } from "socket.io";
 import { io as ClientIO, Socket as ClientSocket } from "socket.io-client";
-import { createSocketServer } from "../socket";
+import { createSocketServer } from "../socket/index.js";
 import jwt from "jsonwebtoken";
-import prisma from "../db";
+import prisma from "../db.js";
 import type { Express } from "express";
 
-vi.mock("../db", () => ({
+vi.mock("../db.js", () => ({
   default: {
     message: {
       create: vi.fn(),

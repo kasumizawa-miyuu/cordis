@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
-import { config } from "../config";
+import { config } from "../config.js";
 
 let _transporter: Transporter | null = null;
 

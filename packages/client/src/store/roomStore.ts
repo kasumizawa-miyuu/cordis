@@ -2,7 +2,7 @@ import { create } from "zustand";
 import api from "../services/api";
 import type { Room, RoomMember } from "@cordis/shared";
 
-interface MemberWithNickname extends RoomMember {
+export interface MemberWithNickname extends RoomMember {
   user?: { nickname: string };
 }
 

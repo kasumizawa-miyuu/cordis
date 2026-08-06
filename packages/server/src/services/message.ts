@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../db.js";
 import { DEFAULTS, FEATURE_FLAGS } from "@cordis/shared";
 
 export class MessageService {
@@ -95,7 +95,7 @@ export class MessageService {
     const hasMore = messages.length > limit;
     const resultMessages = hasMore ? messages.slice(0, limit) : messages;
 
-    const formatted = resultMessages.reverse().map((msg) => ({
+    const formatted = resultMessages.reverse().map((msg: typeof resultMessages[number]) => ({
       id: msg.id,
       roomId: msg.roomId,
       senderId: msg.senderId,

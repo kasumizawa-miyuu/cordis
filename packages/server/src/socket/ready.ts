@@ -1,5 +1,5 @@
 import type { Server as SocketIOServer, Socket } from "socket.io";
-import prisma from "../db";
+import prisma from "../db.js";
 
 export function setupReadyHandlers(io: SocketIOServer, socket: Socket): void {
   socket.on("ready:toggle", async (data: { roomId: string }) => {

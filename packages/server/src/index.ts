@@ -1,7 +1,7 @@
 import { createServer } from "node:http";
-import { createApp } from "./app";
-import { config } from "./config";
-import { createSocketServer } from "./socket";
+import { createApp } from "./app.js";
+import { config } from "./config.js";
+import { createSocketServer } from "./socket/index.js";
 
 const app = createApp();
 const httpServer = createServer(app);

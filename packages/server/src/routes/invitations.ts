@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { InvitationService } from "../services/invitation";
-import { requireAuth } from "../middleware/auth";
-import { validate } from "../middleware/validate";
+import { InvitationService } from "../services/invitation.js";
+import { requireAuth } from "../middleware/auth.js";
+import { validate } from "../middleware/validate.js";
 import {
   joinByInviteSchema,
 } from "@cordis/shared";

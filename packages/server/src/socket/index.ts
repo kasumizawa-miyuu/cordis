@@ -1,11 +1,11 @@
 import type { Server as HttpServer } from "node:http";
 import { Server as SocketIOServer } from "socket.io";
 import jwt from "jsonwebtoken";
-import { config } from "../config";
-import { setupChatHandlers } from "./chat";
-import { setupRoomHandlers } from "./room";
-import { setupReadyHandlers } from "./ready";
-import { setupNotificationHandlers } from "./notification";
+import { config } from "../config.js";
+import { setupChatHandlers } from "./chat.js";
+import { setupRoomHandlers } from "./room.js";
+import { setupReadyHandlers } from "./ready.js";
+import { setupNotificationHandlers } from "./notification.js";
 
 declare module "socket.io" {
   interface Socket {
