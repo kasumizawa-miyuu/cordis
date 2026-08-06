@@ -32,6 +32,7 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+      - run: npm run build -w @cordis/shared
       - run: npx prisma generate --schema packages/server/src/prisma/schema.prisma
       - run: npx prisma migrate deploy --schema packages/server/src/prisma/schema.prisma
       - run: npm test
