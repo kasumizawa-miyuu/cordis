@@ -4,11 +4,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import LobbyPage from "./pages/LobbyPage";
+import CreateRoomPage from "./pages/CreateRoomPage";
 import { useAuth } from "./hooks/useAuth";
-
-function LobbyPage() {
-  return <div>Lobby (coming soon)</div>;
-}
 
 function RoomPage() {
   return <div>Room (coming soon)</div>;
@@ -30,7 +28,7 @@ function AppRoutes() {
         }
       >
         <Route path="/lobby" element={<LobbyPage />} />
-        <Route path="/create-room" element={<div>Create Room (coming soon)</div>} />
+        <Route path="/create-room" element={<CreateRoomPage />} />
         <Route path="/room/:roomId" element={<RoomPage />} />
         <Route path="/invite/:code" element={<div>Invite Join (coming soon)</div>} />
       </Route>
