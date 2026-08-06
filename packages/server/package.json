@@ -8,9 +8,16 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate --schema src/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema src/prisma/schema.prisma",
+    "db:seed": "tsx src/prisma/seed.ts"
+  },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
   },
   "dependencies": {
+    "@prisma/client": "^6.1.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.0",
@@ -24,7 +31,6 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@prisma/client": "^6.1.0",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
