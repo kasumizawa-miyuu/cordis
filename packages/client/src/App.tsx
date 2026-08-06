@@ -6,11 +6,9 @@ import RegisterPage from "./pages/RegisterPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import LobbyPage from "./pages/LobbyPage";
 import CreateRoomPage from "./pages/CreateRoomPage";
+import RoomPage from "./pages/RoomPage";
+import InviteJoinPage from "./pages/InviteJoinPage";
 import { useAuth } from "./hooks/useAuth";
-
-function RoomPage() {
-  return <div>Room (coming soon)</div>;
-}
 
 function AppRoutes() {
   useAuth();
@@ -30,7 +28,7 @@ function AppRoutes() {
         <Route path="/lobby" element={<LobbyPage />} />
         <Route path="/create-room" element={<CreateRoomPage />} />
         <Route path="/room/:roomId" element={<RoomPage />} />
-        <Route path="/invite/:code" element={<div>Invite Join (coming soon)</div>} />
+        <Route path="/invite/:code" element={<InviteJoinPage />} />
       </Route>
       <Route path="/" element={<Navigate to="/lobby" replace />} />
       <Route path="*" element={<Navigate to="/lobby" replace />} />
