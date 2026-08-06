@@ -4,6 +4,7 @@ import morgan from "morgan";
 import authRoutes from "./routes/auth";
 import roomRoutes from "./routes/rooms";
 import invitationRoutes from "./routes/invitations";
+import messageRoutes from "./routes/messages";
 
 export function createApp(): express.Application {
   const app = express();
@@ -19,6 +20,7 @@ export function createApp(): express.Application {
   app.use("/api/auth", authRoutes);
   app.use("/api/rooms", roomRoutes);
   app.use("/api", invitationRoutes);
+  app.use("/api", messageRoutes);
 
   app.use((_req, res) => {
     res.status(404).json({ message: "Not found" });
