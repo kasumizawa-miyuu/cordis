@@ -30,10 +30,13 @@ FROM node:20-alpine AS runtime
 
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY packages/shared/package.json packages/shared/
+COPY packages/server/package.json packages/server/
+RUN npm ci --omit=dev
+
 COPY --from=server-build /app/packages/server/dist packages/server/dist
 COPY --from=server-build /app/packages/shared/dist packages/shared/dist
 COPY --from=client-build /app/packages/client/dist packages/client/dist
-COPY --from=server-build /app/node_modules node_modules
 
 ENV NODE_ENV=production
 EXPOSE 3000

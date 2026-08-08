@@ -1,6 +1,7 @@
 {
   "name": "cordis",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
