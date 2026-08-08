@@ -11,7 +11,7 @@ router.get(
   async (req, res) => {
     try {
       const result = await MessageService.listByRoom(
-        req.params.roomId,
+        req.params.roomId as string,
         req.userId!,
         req.query as any,
       );

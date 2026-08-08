@@ -53,7 +53,7 @@ router.get("/plugin/:pluginId/context", async (req, res) => {
       ? authHeader.slice(7)
       : "";
     const result = await PluginService.getContext(
-      req.params.pluginId,
+      req.params.pluginId as string,
       token,
     );
     res.status(200).json(result);

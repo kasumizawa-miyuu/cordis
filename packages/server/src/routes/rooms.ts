@@ -113,7 +113,7 @@ router.post("/", requireAuth, validate(createRoomSchema), async (req, res) => {
 router.get("/:roomId", async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
       include: {
         _count: { select: { members: true } },
         owner: { select: { id: true, nickname: true } },
@@ -150,7 +150,7 @@ router.get("/:roomId", async (req, res) => {
 router.put("/:roomId", requireAuth, validate(updateRoomSchema), async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -171,7 +171,7 @@ router.put("/:roomId", requireAuth, validate(updateRoomSchema), async (req, res)
     }
 
     const updated = await prisma.room.update({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
       data: updateData as any,
     });
 
@@ -185,7 +185,7 @@ router.put("/:roomId", requireAuth, validate(updateRoomSchema), async (req, res)
 router.delete("/:roomId", requireAuth, async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -198,7 +198,7 @@ router.delete("/:roomId", requireAuth, async (req, res) => {
       return;
     }
 
-    await prisma.room.delete({ where: { id: req.params.roomId } });
+    await prisma.room.delete({ where: { id: req.params.roomId as string } });
 
     res.status(200).json({ message: "Room deleted successfully" });
   } catch (err) {
@@ -210,7 +210,7 @@ router.delete("/:roomId", requireAuth, async (req, res) => {
 router.post("/:roomId/join", requireAuth, validate(joinRoomSchema), async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -270,7 +270,7 @@ router.post("/:roomId/join", requireAuth, validate(joinRoomSchema), async (req, 
 router.post("/:roomId/leave", requireAuth, async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -309,7 +309,7 @@ router.post("/:roomId/leave", requireAuth, async (req, res) => {
 router.get("/:roomId/members", requireAuth, async (req, res) => {
   try {
     const members = await prisma.roomMember.findMany({
-      where: { roomId: req.params.roomId },
+      where: { roomId: req.params.roomId as string },
       include: { user: { select: { id: true, nickname: true, avatarUrl: true } } },
       orderBy: { joinedAt: "asc" },
     });
@@ -318,8 +318,8 @@ router.get("/:roomId/members", requireAuth, async (req, res) => {
       members.map((m: typeof members[number]) => ({
         id: m.id,
         userId: m.userId,
-        nickname: m.user.nickname,
-        avatarUrl: m.user.avatarUrl,
+        nickname: (m as any).user.nickname,
+        avatarUrl: (m as any).user.avatarUrl,
         role: m.role,
         isReady: m.isReady,
         isMuted: m.isMuted,
@@ -335,7 +335,7 @@ router.get("/:roomId/members", requireAuth, async (req, res) => {
 router.post("/:roomId/kick/:userId", requireAuth, async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -353,7 +353,7 @@ router.post("/:roomId/kick/:userId", requireAuth, async (req, res) => {
     }
 
     const target = await prisma.roomMember.findFirst({
-      where: { roomId: room.id, userId: req.params.userId },
+      where: { roomId: room.id, userId: req.params.userId as string },
     });
 
     if (!target) {
@@ -383,7 +383,7 @@ router.post("/:roomId/kick/:userId", requireAuth, async (req, res) => {
 router.post("/:roomId/mute/:userId", requireAuth, async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -401,7 +401,7 @@ router.post("/:roomId/mute/:userId", requireAuth, async (req, res) => {
     }
 
     const target = await prisma.roomMember.findFirst({
-      where: { roomId: room.id, userId: req.params.userId },
+      where: { roomId: room.id, userId: req.params.userId as string },
     });
 
     if (!target) {
@@ -429,7 +429,7 @@ router.post("/:roomId/mute/:userId", requireAuth, async (req, res) => {
 router.post("/:roomId/unmute/:userId", requireAuth, async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -447,7 +447,7 @@ router.post("/:roomId/unmute/:userId", requireAuth, async (req, res) => {
     }
 
     const target = await prisma.roomMember.findFirst({
-      where: { roomId: room.id, userId: req.params.userId },
+      where: { roomId: room.id, userId: req.params.userId as string },
     });
 
     if (!target) {
@@ -470,7 +470,7 @@ router.post("/:roomId/unmute/:userId", requireAuth, async (req, res) => {
 router.post("/:roomId/transfer/:userId", requireAuth, async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -484,7 +484,7 @@ router.post("/:roomId/transfer/:userId", requireAuth, async (req, res) => {
     }
 
     const newOwner = await prisma.roomMember.findFirst({
-      where: { roomId: room.id, userId: req.params.userId },
+      where: { roomId: room.id, userId: req.params.userId as string },
     });
 
     if (!newOwner) {
@@ -495,7 +495,7 @@ router.post("/:roomId/transfer/:userId", requireAuth, async (req, res) => {
     await prisma.$transaction([
       prisma.room.update({
         where: { id: room.id },
-        data: { ownerId: req.params.userId },
+        data: { ownerId: req.params.userId as string },
       }),
       prisma.roomMember.update({
         where: { id: newOwner.id },
@@ -519,7 +519,7 @@ router.post("/:roomId/transfer/:userId", requireAuth, async (req, res) => {
 router.post("/:roomId/promote/:userId", requireAuth, async (req, res) => {
   try {
     const room = await prisma.room.findUnique({
-      where: { id: req.params.roomId },
+      where: { id: req.params.roomId as string },
     });
 
     if (!room) {
@@ -533,7 +533,7 @@ router.post("/:roomId/promote/:userId", requireAuth, async (req, res) => {
     }
 
     const target = await prisma.roomMember.findFirst({
-      where: { roomId: room.id, userId: req.params.userId },
+      where: { roomId: room.id, userId: req.params.userId as string },
     });
 
     if (!target) {

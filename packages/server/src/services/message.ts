@@ -34,7 +34,7 @@ export class MessageService {
         senderId,
         content,
         type,
-        metadata: metadata ?? undefined,
+        metadata: (metadata ?? undefined) as any,
       },
       include: {
         sender: {
@@ -47,7 +47,7 @@ export class MessageService {
       id: message.id,
       roomId: message.roomId,
       senderId: message.senderId,
-      senderNickname: message.sender.nickname,
+      senderNickname: (message as any).sender.nickname,
       content: message.content,
       type: message.type,
       metadata: message.metadata,
@@ -99,7 +99,7 @@ export class MessageService {
       id: msg.id,
       roomId: msg.roomId,
       senderId: msg.senderId,
-      senderNickname: msg.sender.nickname,
+      senderNickname: (msg as any).sender.nickname,
       content: msg.content,
       type: msg.type,
       metadata: msg.metadata,

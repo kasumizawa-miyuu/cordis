@@ -15,7 +15,7 @@ router.post(
   async (req, res) => {
     try {
       const invitation = await InvitationService.create(
-        req.params.roomId,
+        req.params.roomId as string,
         req.userId!,
         req.body,
       );
@@ -30,7 +30,7 @@ router.post(
 router.get("/rooms/:roomId/invitations", async (req, res) => {
   try {
     const invitations = await InvitationService.listByRoom(
-      req.params.roomId,
+      req.params.roomId as string,
       req.userId!,
     );
     res.status(200).json(invitations);
