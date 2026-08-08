@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String       @id @default(uuid()) @db.Uuid
+  email           String       @unique
+  passwordHash    String
+  nickname        String
+  avatarUrl       String?
+  bio             String?
+  isEmailVerified Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  ownedRooms      Room[]       @relation("RoomOwner")
+  roomMembers     RoomMember[]
+  messages        Message[]
+  invitations     Invitation[]
+}
+
+model Room {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String
+  description  String?
+  ownerId      String    @db.Uuid
+  maxMembers   Int
+  isPublic     Boolean   @default(true)
+  isLocked     Boolean   @default(false)
+  requireReady Boolean   @default(false)
+  password     String?
+  tags         String[]  @default([])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  owner        User              @relation("RoomOwner", fields: [ownerId], references: [id])
+  members      RoomMember[]
+  messages     Message[]
+  invitations  Invitation[]
+  plugin       PluginInstance?
+}
+
+model RoomMember {
+  id       String   @id @default(uuid()) @db.Uuid
+  roomId   String   @db.Uuid
+  userId   String   @db.Uuid
+  role     String   @default("MEMBER")
+  isReady  Boolean  @default(false)
+  isMuted  Boolean  @default(false)
+  joinedAt DateTime @default(now())
+
+  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+}
+
+model Message {
+  id        String    @id @default(uuid()) @db.Uuid
+  roomId    String    @db.Uuid
+  senderId  String    @db.Uuid
+  content   String
+  type      String    @default("TEXT")
+  metadata  Json?
+  createdAt DateTime  @default(now())
+
+  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender    User      @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, createdAt])
+}
+
+model Invitation {
+  id        String    @id @default(uuid()) @db.Uuid
+  roomId    String    @db.Uuid
+  inviterId String    @db.Uuid
+  code      String    @unique
+  expiresAt DateTime
+  maxUses   Int?
+  useCount  Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  inviter   User      @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+}
+
+model EmailVerification {
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String
+  code      String
+  expiresAt DateTime
+  usedAt    DateTime?
+  type      String
+  attempts  Int       @default(0)
+}
+
+model PluginInstance {
+  id             String    @id @default(uuid()) @db.Uuid
+  roomId         String    @unique @db.Uuid
+  pluginId       String
+  state          String    @default("INACTIVE")
+  config         Json?
+  token          String?
+  tokenExpiresAt DateTime?
+  activatedAt    DateTime?
+  createdAt      DateTime  @default(now())
+
+  room           Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+}
