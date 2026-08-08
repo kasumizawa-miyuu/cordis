@@ -166,7 +166,15 @@
 
 - **问题：** 运行时报错 `@prisma/client did not initialize yet. Please run "prisma generate"`。`npm ci --omit=dev` 安装了 `@prisma/client` 包但未生成客户端代码
 - **修复：** Dockerfile server-build stage 添加 `npx prisma generate`，runtime stage 从 server-build 复制 `node_modules/.prisma` 目录
-- **Commit：** 待提交
+- **Commit：** `dc30fa5` — fix: add prisma generate to Dockerfile, copy .prisma client to runtime
+
+### 22:10 — Systematic Debugging: TypeScript Type Errors
+
+- **问题：** Docker build 失败 — `tsc` 构建时报 20+ 个类型错误。`@types/express` v5 将 `req.params` 类型改为 `string | string[]`，Prisma `include` 返回类型推断失败
+- **根因：** subagent 生成的代码在本地用 vitest（esbuild 转译）运行，从未经过 `tsc` 严格类型检查。Docker 构建中的 `tsc` 暴露了所有类型问题
+- **修复：** 5 个文件：`rooms.ts`（20 处 `as string` 断言）、`invitations.ts`（2 处）、`messages.ts`（1 处）、`plugin.ts`（1 处）、`message.ts`（`as any` 类型断言）
+- **Commit：** `5bfee2e` — fix: resolve TypeScript strict type errors in Express 5 params and Prisma types
+- **验证：** `tsc --noEmit` 无错误，34/34 测试通过
 
 ## 学到的教训
 
