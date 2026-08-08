@@ -162,6 +162,12 @@
 - **修复：** 重写 Dockerfile 运行时 stage，执行 `npm ci --omit=dev` 来正确建立 workspace 链接，同时根 `package.json` 添加 `"type": "module"`
 - **Commit：** `7be3f71` — fix: run npm ci in runtime stage to resolve workspace links, add type module
 
+### 21:45 — Render Deployment Debug #3
+
+- **问题：** 运行时报错 `@prisma/client did not initialize yet. Please run "prisma generate"`。`npm ci --omit=dev` 安装了 `@prisma/client` 包但未生成客户端代码
+- **修复：** Dockerfile server-build stage 添加 `npx prisma generate`，runtime stage 从 server-build 复制 `node_modules/.prisma` 目录
+- **Commit：** 待提交
+
 ## 学到的教训
 
 1. **Subagent batch 派发效率高：** 将 Tasks 8-11 和 12-16 分别打包派发给一个 subagent，比逐个派发快得多。subagent 在单个会话中能保持上下文，减少了重复探索的开销。

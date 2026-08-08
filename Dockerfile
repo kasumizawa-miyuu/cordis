@@ -23,6 +23,7 @@ RUN npm ci
 COPY packages/shared packages/shared
 COPY packages/server packages/server
 COPY tsconfig.base.json .
+RUN npx prisma generate --schema packages/server/src/prisma/schema.prisma
 RUN npm run build -w @cordis/shared
 RUN npm run build -w @cordis/server
 
@@ -37,6 +38,7 @@ RUN npm ci --omit=dev
 COPY --from=server-build /app/packages/server/dist packages/server/dist
 COPY --from=server-build /app/packages/shared/dist packages/shared/dist
 COPY --from=client-build /app/packages/client/dist packages/client/dist
+COPY --from=server-build /app/node_modules/.prisma node_modules/.prisma
 
 ENV NODE_ENV=production
 EXPOSE 3000
