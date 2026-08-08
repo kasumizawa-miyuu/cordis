@@ -46,4 +46,4 @@ COPY --from=server-build /app/packages/server/src/prisma packages/server/src/pri
 
 ENV NODE_ENV=production
 EXPOSE 3000
-CMD ["sh", "-c", "npx prisma migrate deploy --schema packages/server/src/prisma/schema.prisma && node packages/server/dist/index.js"]
+CMD ["sh", "-c", "npx prisma db push --schema packages/server/src/prisma/schema.prisma && node packages/server/dist/index.js"]
