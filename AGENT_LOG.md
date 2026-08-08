@@ -150,6 +150,18 @@
 - **PR #3：** feat/deploy → main
 - **结果：** 三个 PR 已合并
 
+### 21:15 — Render Deployment Debug #1
+
+- **问题：** Docker build 失败 — `tsc` 编译了测试文件，测试文件依赖 `socket.io-client`（不在 server 依赖中），且存在隐式 `any` 类型
+- **修复：** `packages/server/tsconfig.json` 添加 `"exclude": ["src/__tests__"]`
+- **Commit：** `ed18776` — fix: exclude test files from server build to prevent Docker build errors
+
+### 21:30 — Render Deployment Debug #2
+
+- **问题：** Docker build 通过但运行时失败 — `Cannot find package '@cordis/shared'`。运行时 stage 的 `node_modules` 从 server-build 复制，但 npm workspaces 的符号链接在跨 stage 复制时丢失
+- **修复：** 重写 Dockerfile 运行时 stage，执行 `npm ci --omit=dev` 来正确建立 workspace 链接，同时根 `package.json` 添加 `"type": "module"`
+- **Commit：** `7be3f71` — fix: run npm ci in runtime stage to resolve workspace links, add type module
+
 ## 学到的教训
 
 1. **Subagent batch 派发效率高：** 将 Tasks 8-11 和 12-16 分别打包派发给一个 subagent，比逐个派发快得多。subagent 在单个会话中能保持上下文，减少了重复探索的开销。
@@ -159,3 +171,7 @@
 3. **merge 后再创建 PR 不可行：** 最初将代码合并到 main 后再创建 PR，发现 GitHub 显示"no commits between"。正确的流程是先创建 PR 再合并。
 
 4. **worktree 清理需要先合并后删除：** 直接删除 worktree 目录会导致 git 状态混乱，必须使用 `git worktree remove` 命令。
+
+5. **Docker 多阶段构建中 npm workspaces 符号链接不跨 stage 传递：** 从 server-build 复制 node_modules 到 runtime 时，workspace 的符号链接（`@cordis/shared` → `../../packages/shared`）虽然在文件系统中存在，但 npm 的 workspace 解析机制需要 `npm ci` 来正确建立。解决方法是在 runtime stage 中也运行 `npm ci --omit=dev`。
+
+6. **tsc 编译应排除测试文件：** 测试文件可能引用仅在 devDependencies 中的包（如 `socket.io-client`），应通过 tsconfig 的 `exclude` 配置排除测试目录，避免生产构建时引入不必要的依赖。
