@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import express from "express";
 import request from "supertest";
-import prisma from "../db";
-import invitationRoutes from "../routes/invitations";
+import prisma from "../db.js";
+import invitationRoutes from "../routes/invitations.js";
 import type { Express } from "express";
 
-vi.mock("../db", () => ({
+vi.mock("../db.js", () => ({
   default: {
     room: {
       findUnique: vi.fn(),
@@ -24,7 +24,7 @@ vi.mock("../db", () => ({
   },
 }));
 
-vi.mock("../middleware/auth", () => ({
+vi.mock("../middleware/auth.js", () => ({
   requireAuth: (req: any, _res: any, next: any) => {
     req.userId = "user-1";
     req.email = "test@example.com";

@@ -1,11 +1,16 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import authRoutes from "./routes/auth";
-import roomRoutes from "./routes/rooms";
-import invitationRoutes from "./routes/invitations";
-import messageRoutes from "./routes/messages";
-import pluginRoutes from "./routes/plugin";
+import path from "path";
+import { fileURLToPath } from "url";
+import authRoutes from "./routes/auth.js";
+import roomRoutes from "./routes/rooms.js";
+import invitationRoutes from "./routes/invitations.js";
+import messageRoutes from "./routes/messages.js";
+import pluginRoutes from "./routes/plugin.js";
+import { config } from "./config.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export function createApp(): express.Application {
   const app = express();
@@ -23,6 +28,15 @@ export function createApp(): express.Application {
   app.use("/api", invitationRoutes);
   app.use("/api", messageRoutes);
   app.use("/api", pluginRoutes);
+
+  if (config.nodeEnv === "production") {
+    app.use(express.static(path.join(__dirname, "../../client/dist")));
+    app.get("*", (req, res) => {
+      if (!req.path.startsWith("/api") && !req.path.startsWith("/socket.io")) {
+        res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
+      }
+    });
+  }
 
   app.use((_req, res) => {
     res.status(404).json({ message: "Not found" });

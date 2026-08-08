@@ -1,5 +1,5 @@
 import type { Server as SocketIOServer, Socket } from "socket.io";
-import { MessageService } from "../services/message";
+import { MessageService } from "../services/message.js";
 import { FEATURE_FLAGS } from "@cordis/shared";
 
 export function setupChatHandlers(io: SocketIOServer, socket: Socket): void {

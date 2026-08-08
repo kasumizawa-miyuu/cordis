@@ -3,12 +3,12 @@ import express from "express";
 import request from "supertest";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import prisma from "../db";
-import pluginRoutes from "../routes/plugin";
-import { PluginService } from "../services/plugin";
+import prisma from "../db.js";
+import pluginRoutes from "../routes/plugin.js";
+import { PluginService } from "../services/plugin.js";
 import type { Express } from "express";
 
-vi.mock("../db", () => ({
+vi.mock("../db.js", () => ({
   default: {
     room: {
       findUnique: vi.fn(),
@@ -26,7 +26,7 @@ vi.mock("../db", () => ({
   },
 }));
 
-vi.mock("../middleware/auth", () => ({
+vi.mock("../middleware/auth.js", () => ({
   requireAuth: (req: any, _res: any, next: any) => {
     req.userId = "user-1";
     req.email = "test@example.com";

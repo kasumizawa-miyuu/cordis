@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import prisma from "../db";
-import { config } from "../config";
+import prisma from "../db.js";
+import { config } from "../config.js";
 import type { IPluginManifest, PluginContextResponse } from "@cordis/shared";
 
 const pluginRegistry = new Map<string, IPluginManifest>();
@@ -49,7 +49,7 @@ export class PluginService {
       const members = await prisma.roomMember.findMany({
         where: { roomId },
       });
-      const allReady = members.every((m) => m.isReady);
+      const allReady = members.every((m: { isReady: boolean }) => m.isReady);
       if (!allReady) {
         const err = new Error("All members must be ready before starting this plugin") as Error & {
           statusCode: number;
@@ -98,7 +98,7 @@ export class PluginService {
 
     const context: PluginContextResponse = {
       room: { id: room.id, name: room.name },
-      members: members.map((m) => ({
+      members: members.map((m: { userId: string; user: { nickname: string } }) => ({
         userId: m.userId,
         nickname: m.user.nickname,
       })),
@@ -173,7 +173,7 @@ export class PluginService {
 
     return {
       room: { id: room.id, name: room.name },
-      members: members.map((m) => ({
+      members: members.map((m: { userId: string; user: { nickname: string } }) => ({
         userId: m.userId,
         nickname: m.user.nickname,
       })),
