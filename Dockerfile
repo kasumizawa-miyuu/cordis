@@ -39,7 +39,11 @@ COPY --from=server-build /app/packages/server/dist packages/server/dist
 COPY --from=server-build /app/packages/shared/dist packages/shared/dist
 COPY --from=client-build /app/packages/client/dist packages/client/dist
 COPY --from=server-build /app/node_modules/.prisma node_modules/.prisma
+COPY --from=server-build /app/node_modules/prisma node_modules/prisma
+COPY --from=server-build /app/node_modules/@prisma node_modules/@prisma
+COPY --from=server-build /app/node_modules/.bin/prisma node_modules/.bin/prisma
+COPY --from=server-build /app/packages/server/src/prisma packages/server/src/prisma
 
 ENV NODE_ENV=production
 EXPOSE 3000
-CMD ["node", "packages/server/dist/index.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy --schema packages/server/src/prisma/schema.prisma && node packages/server/dist/index.js"]
