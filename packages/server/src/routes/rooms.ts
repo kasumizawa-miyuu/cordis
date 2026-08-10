@@ -322,11 +322,30 @@ router.post("/:roomId/leave", requireAuth, async (req, res) => {
     }
 
     if (member.role === "OWNER") {
-      res.status(400).json({ message: "Owner must transfer ownership before leaving" });
-      return;
-    }
+      const otherMembers = await prisma.roomMember.findMany({
+        where: { roomId: room.id, userId: { not: req.userId! } },
+        orderBy: { joinedAt: "asc" },
+      });
 
-    await prisma.roomMember.delete({ where: { id: member.id } });
+      if (otherMembers.length > 0) {
+        const newOwner = otherMembers[0];
+        await prisma.$transaction([
+          prisma.room.update({
+            where: { id: room.id },
+            data: { ownerId: newOwner.userId },
+          }),
+          prisma.roomMember.update({
+            where: { id: newOwner.id },
+            data: { role: "OWNER" },
+          }),
+          prisma.roomMember.delete({ where: { id: member.id } }),
+        ]);
+      } else {
+        await prisma.room.delete({ where: { id: room.id } });
+      }
+    } else {
+      await prisma.roomMember.delete({ where: { id: member.id } });
+    }
 
     res.status(200).json({ message: "Left room successfully" });
   } catch (err) {

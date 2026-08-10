@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
+import { useAuthStore } from "../store/authStore";
 import type { Room } from "@cordis/shared";
 
 interface RoomListResponse {
@@ -21,6 +22,7 @@ export default function LobbyPage() {
   const [loading, setLoading] = useState(false);
   const [expandedRoom, setExpandedRoom] = useState<string | null>(null);
   const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
 
   const fetchRooms = useCallback(async () => {
     setLoading(true);
@@ -74,6 +76,16 @@ export default function LobbyPage() {
       } catch (err: any) {
         alert(err.response?.data?.message || "Failed to join room");
       }
+    }
+  };
+
+  const handleDelete = async (roomId: string) => {
+    if (!confirm("Are you sure you want to delete this room?")) return;
+    try {
+      await api.delete(`/rooms/${roomId}`);
+      setRooms((prev) => prev.filter((r) => r.id !== roomId));
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Failed to delete room");
     }
   };
 
@@ -210,13 +222,23 @@ export default function LobbyPage() {
                     {expandedRoom === room.id ? "Hide Details" : "Show Details"}
                   </button>
                 </div>
-                <button
-                  onClick={() => handleJoin(room.id, !!room.hasPassword)}
-                  disabled={room.isLocked}
-                  style={{ padding: "8px 20px", cursor: room.isLocked ? "not-allowed" : "pointer" }}
-                >
-                  {room.isLocked ? "Locked" : "Join"}
-                </button>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {myRooms && room.ownerId === user?.id && (
+                    <button
+                      onClick={() => handleDelete(room.id)}
+                      style={{ padding: "8px 16px", cursor: "pointer", color: "red", borderColor: "red" }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleJoin(room.id, !!room.hasPassword)}
+                    disabled={room.isLocked}
+                    style={{ padding: "8px 20px", cursor: room.isLocked ? "not-allowed" : "pointer" }}
+                  >
+                    {room.isLocked ? "Locked" : "Join"}
+                  </button>
+                </div>
               </div>
             </div>
           ))}

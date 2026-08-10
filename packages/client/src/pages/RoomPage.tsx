@@ -41,8 +41,8 @@ export default function RoomPage() {
   const handleLeave = async () => {
     try {
       await api.post(`/rooms/${roomId}/leave`);
-    } catch {
-      // proceed even if API fails
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Failed to leave room");
     }
     navigate("/lobby");
   };

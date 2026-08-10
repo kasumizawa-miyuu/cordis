@@ -11,7 +11,7 @@ export default function MemberList() {
   const handleKick = async (userId: string) => {
     if (!room) return;
     try {
-      await api.post(`/rooms/${room.id}/kick`, { userId });
+      await api.post(`/rooms/${room.id}/kick/${userId}`);
       useRoomStore.getState().removeMember(userId);
     } catch (err: any) {
       alert(err.response?.data?.message || "Failed to kick member");
@@ -22,9 +22,9 @@ export default function MemberList() {
     if (!room) return;
     try {
       if (mute) {
-        await api.post(`/rooms/${room.id}/mute`, { userId });
+        await api.post(`/rooms/${room.id}/mute/${userId}`);
       } else {
-        await api.post(`/rooms/${room.id}/unmute`, { userId });
+        await api.post(`/rooms/${room.id}/unmute/${userId}`);
       }
       useRoomStore.getState().updateMemberMute(userId, mute);
     } catch (err: any) {
@@ -35,7 +35,7 @@ export default function MemberList() {
   const handlePromote = async (userId: string) => {
     if (!room) return;
     try {
-      await api.post(`/rooms/${room.id}/promote`, { userId });
+      await api.post(`/rooms/${room.id}/promote/${userId}`);
       useRoomStore.getState().updateMemberRole(userId, "ADMIN");
     } catch (err: any) {
       alert(err.response?.data?.message || "Failed to promote");
@@ -82,7 +82,7 @@ export default function MemberList() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center" }}>
-                <span>{member.user?.nickname || member.userId.slice(0, 8)}</span>
+                <span>{(member as any).nickname || member.user?.nickname || member.userId.slice(0, 8)}</span>
                 {roleBadge(member.role)}
                 {member.isMuted && (
                   <span style={{ color: "red", fontSize: 11, marginLeft: 8 }}>Muted</span>
