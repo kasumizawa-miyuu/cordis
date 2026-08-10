@@ -112,6 +112,62 @@
 | 插件启动 | 房主启动插件 | 房间所有成员 |
 | 插件结束 | 插件结束 | 房间所有成员 |
 
+### 3.11 REST API 端点定义
+
+#### 认证
+
+| 方法 | 端点 | 请求体 | 响应体 |
+|------|------|--------|--------|
+| POST | `/api/auth/register` | `{ email, password, nickname }` | `{ message }` |
+| POST | `/api/auth/login` | `{ email, password }` | `{ user: { id, email, nickname, avatarUrl, isEmailVerified }, tokens: { accessToken, refreshToken } }` |
+| POST | `/api/auth/refresh` | `{ refreshToken }` | `{ tokens: { accessToken, refreshToken } }` |
+| POST | `/api/auth/verify-email` | `{ email, code, type }` | `{ message }` |
+| POST | `/api/auth/reset-password` | `{ email }` | `{ message }` |
+| POST | `/api/auth/reset-password/confirm` | `{ email, code, newPassword }` | `{ message }` |
+| GET | `/api/auth/me` | — | `{ id, email, nickname, avatarUrl, bio, isEmailVerified, createdAt }` |
+| PUT | `/api/auth/me` | `{ nickname?, avatarUrl?, bio? }` | `{ id, email, nickname, avatarUrl, bio, isEmailVerified }` |
+
+#### 房间
+
+| 方法 | 端点 | 请求体 | 响应体 |
+|------|------|--------|--------|
+| GET | `/api/rooms?page=&search=&tag=` | — | `{ rooms: [...], total, page, totalPages }` |
+| POST | `/api/rooms` | `{ name, description?, maxMembers, isPublic, requireReady, password?, tags? }` | `{ id, name, ... }` |
+| GET | `/api/rooms/:roomId` | — | `{ room: { id, name, ... }, members: [{ id, userId, nickname, avatarUrl, role, isReady, isMuted }] }` |
+| PUT | `/api/rooms/:roomId` | `{ name?, description?, maxMembers?, ... }` | `{ id, name, ... }` |
+| DELETE | `/api/rooms/:roomId` | — | `{ message }` |
+| POST | `/api/rooms/:roomId/join` | `{ password? }` | `{ message }` |
+| POST | `/api/rooms/:roomId/leave` | — | `{ message }` |
+| GET | `/api/rooms/:roomId/members` | — | `[{ id, userId, nickname, avatarUrl, role, isReady, isMuted }]` |
+| POST | `/api/rooms/:roomId/kick/:userId` | — | `{ message }` |
+| POST | `/api/rooms/:roomId/mute/:userId` | — | `{ message }` |
+| POST | `/api/rooms/:roomId/unmute/:userId` | — | `{ message }` |
+| POST | `/api/rooms/:roomId/transfer/:userId` | — | `{ message }` |
+| POST | `/api/rooms/:roomId/promote/:userId` | — | `{ message }` |
+
+#### 邀请
+
+| 方法 | 端点 | 请求体 | 响应体 |
+|------|------|--------|--------|
+| POST | `/api/rooms/:roomId/invitations` | `{ expiresAt?, maxUses? }` | `{ id, code, expiresAt, ... }` |
+| GET | `/api/rooms/:roomId/invitations` | — | `[{ id, code, expiresAt, useCount, ... }]` |
+| POST | `/api/invitations/join` | `{ code }` | `{ message }` |
+
+#### 消息
+
+| 方法 | 端点 | 请求体 | 响应体 |
+|------|------|--------|--------|
+| GET | `/api/rooms/:roomId/messages?cursor=&limit=` | — | `{ messages: [{ id, senderId, senderNickname, content, type, createdAt }], nextCursor }` |
+
+#### 插件
+
+| 方法 | 端点 | 请求体 | 响应体 |
+|------|------|--------|--------|
+| GET | `/api/plugin/list` | — | `[{ id, name, version, description, url }]` |
+| POST | `/api/plugin/start` | `{ pluginId, roomId }` | `{ token, pluginUrl, context }` |
+| POST | `/api/plugin/end` | `{ pluginId, roomId, token }` | `{ message }` |
+| GET | `/api/plugin/:pluginId/context` | Header: `Authorization: Bearer <token>` | `{ roomId, roomName, members }` |
+
 ## 4. 非功能性需求
 
 ### 4.1 性能
