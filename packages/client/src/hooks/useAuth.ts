@@ -10,7 +10,7 @@ export function useAuth() {
       api
         .get("/auth/me")
         .then(({ data }) => {
-          setUser(data.user);
+          setUser(data);
         })
         .catch(() => {
           useAuthStore.getState().logout();

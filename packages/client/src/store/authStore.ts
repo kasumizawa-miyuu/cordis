@@ -67,18 +67,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   verifyEmail: async (email: string, code: string, type: string) => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await api.post<AuthResponse>("/auth/verify-email", {
+      await api.post("/auth/verify-email", {
         email,
         code,
         type,
       });
-      localStorage.setItem("accessToken", data.tokens.accessToken);
-      localStorage.setItem("refreshToken", data.tokens.refreshToken);
-      set({
-        user: data.user,
-        isAuthenticated: true,
-        isLoading: false,
-      });
+      set({ isLoading: false });
     } catch (err: any) {
       const message = err.response?.data?.message || "Verification failed";
       set({ isLoading: false, error: message });
