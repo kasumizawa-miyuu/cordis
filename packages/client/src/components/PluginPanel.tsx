@@ -59,6 +59,7 @@ export default function PluginPanel({ roomId, onClose }: Props) {
     try {
       await api.post("/plugin/end", {
         pluginId: plugin.id,
+        roomId,
         token: "temp",
       });
       setRunningPlugin(null);

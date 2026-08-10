@@ -9,6 +9,7 @@ export interface Room {
   isPublic: boolean;
   isLocked: boolean;
   requireReady: boolean;
+  hasPassword?: boolean;
   password?: string | null;
   tags: string[];
   createdAt: string;
@@ -46,7 +47,6 @@ export interface UpdateRoomRequest {
 }
 
 export interface JoinRoomRequest {
-  roomId: string;
   password?: string;
 }
 
@@ -54,5 +54,5 @@ export interface RoomListQuery {
   page?: number;
   limit?: number;
   search?: string;
-  tags?: string[];
+  tag?: string;
 }

@@ -75,7 +75,6 @@ export const updateRoomSchema = z.object({
 });
 
 export const joinRoomSchema = z.object({
-  roomId: z.string().uuid("Invalid room ID"),
   password: z.string().optional(),
 });
 
@@ -83,11 +82,10 @@ export const roomListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(DEFAULTS.ROOM_LIST_PAGE_SIZE),
   search: z.string().optional(),
-  tags: z.array(z.string()).optional(),
+  tag: z.string().optional(),
 });
 
 export const createInvitationSchema = z.object({
-  roomId: z.string().uuid("Invalid room ID"),
   expiresAt: z.string().datetime().optional(),
   maxUses: z.number().int().min(1).optional(),
 });
@@ -119,6 +117,7 @@ export const startPluginSchema = z.object({
 
 export const endPluginSchema = z.object({
   pluginId: z.string().min(1, "Plugin ID is required"),
+  roomId: z.string().uuid("Invalid room ID"),
   token: z.string().min(1, "Token is required"),
 });
 

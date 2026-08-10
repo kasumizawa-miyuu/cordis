@@ -35,6 +35,7 @@ export interface StartPluginRequest {
 
 export interface EndPluginRequest {
   pluginId: string;
+  roomId: string;
   token: string;
 }
 

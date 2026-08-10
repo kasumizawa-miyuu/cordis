@@ -200,7 +200,7 @@ describe("Plugin Routes", () => {
 
       const res = await request(app)
         .post("/api/plugin/end")
-        .send({ pluginId: "vote", token: "plugin-token-abc" });
+        .send({ pluginId: "vote", roomId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", token: "plugin-token-abc" });
 
       expect(res.status).toBe(200);
     });
@@ -213,7 +213,7 @@ describe("Plugin Routes", () => {
 
       const res = await request(app)
         .post("/api/plugin/end")
-        .send({ pluginId: "vote", token: "wrong-token" });
+        .send({ pluginId: "vote", roomId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", token: "wrong-token" });
 
       expect(res.status).toBe(403);
     });

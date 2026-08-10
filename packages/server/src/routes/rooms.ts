@@ -16,7 +16,7 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const query = roomListQuerySchema.parse(req.query);
-    const { page, limit, search, tags } = query;
+    const { page, limit, search, tag } = query;
 
     const where: Record<string, unknown> = { isPublic: true };
 
@@ -24,8 +24,8 @@ router.get("/", async (req, res) => {
       where.name = { contains: search, mode: "insensitive" };
     }
 
-    if (tags && tags.length > 0) {
-      where.tags = { hasSome: tags };
+    if (tag) {
+      where.tags = { has: tag };
     }
 
     const total = await prisma.room.count({ where });

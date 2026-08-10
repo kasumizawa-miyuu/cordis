@@ -49,7 +49,7 @@ router.post(
         req.body.code,
         req.userId!,
       );
-      res.status(201).json(member);
+      res.status(201).json({ message: "Joined room successfully", roomId: member.roomId });
     } catch (err) {
       const error = err as Error & { statusCode?: number };
       res.status(error.statusCode || 500).json({ message: error.message });

@@ -27,7 +27,7 @@ export default function LobbyPage() {
       params.set("page", String(page));
       params.set("limit", "20");
       if (search) params.set("search", search);
-      if (tagFilter) params.set("tags", tagFilter);
+      if (tagFilter) params.set("tag", tagFilter);
 
       const { data } = await api.get<RoomListResponse>(`/rooms?${params.toString()}`);
       setRooms(data.rooms);
@@ -117,7 +117,7 @@ export default function LobbyPage() {
               <div>
                 <h3 style={{ margin: 0 }}>
                   {room.name}
-                  {room.password ? " 🔒" : ""}
+                  {room.hasPassword ? " 🔒" : ""}
                   {room.isLocked ? " 🔐" : ""}
                 </h3>
                 {room.description && (
@@ -144,7 +144,7 @@ export default function LobbyPage() {
                 </p>
               </div>
               <button
-                onClick={() => handleJoin(room.id, !!room.password)}
+                onClick={() => handleJoin(room.id, !!room.hasPassword)}
                 disabled={room.isLocked}
                 style={{ padding: "8px 20px", cursor: room.isLocked ? "not-allowed" : "pointer" }}
               >

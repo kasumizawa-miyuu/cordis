@@ -10,7 +10,6 @@ export interface Invitation {
 }
 
 export interface CreateInvitationRequest {
-  roomId: string;
   expiresAt?: string;
   maxUses?: number;
 }
