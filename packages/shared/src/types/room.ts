@@ -5,7 +5,9 @@ export interface Room {
   name: string;
   description?: string | null;
   ownerId: string;
+  ownerNickname?: string;
   maxMembers: number;
+  memberCount?: number;
   isPublic: boolean;
   isLocked: boolean;
   requireReady: boolean;
@@ -55,4 +57,5 @@ export interface RoomListQuery {
   limit?: number;
   search?: string;
   tag?: string;
+  mine?: boolean;
 }

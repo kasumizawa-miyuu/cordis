@@ -176,6 +176,23 @@ router.post("/verify-email", validate(verifyEmailSchema), async (req, res) => {
         where: { email },
         data: { isEmailVerified: true },
       });
+
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (user) {
+        const tokens = generateTokens(user.id, user.email);
+        res.status(200).json({
+          message: "Email verified successfully",
+          user: {
+            id: user.id,
+            email: user.email,
+            nickname: user.nickname,
+            avatarUrl: user.avatarUrl,
+            isEmailVerified: true,
+          },
+          tokens,
+        });
+        return;
+      }
     }
 
     res.status(200).json({ message: "Email verified successfully" });

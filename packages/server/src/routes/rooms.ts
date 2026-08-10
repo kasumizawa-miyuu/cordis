@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import prisma from "../db.js";
-import { requireAuth } from "../middleware/auth.js";
+import { requireAuth, optionalAuth } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import {
   createRoomSchema,
@@ -13,12 +13,26 @@ import {
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", optionalAuth, async (req, res) => {
   try {
     const query = roomListQuerySchema.parse(req.query);
-    const { page, limit, search, tag } = query;
+    const { page, limit, search, tag, mine } = query;
 
-    const where: Record<string, unknown> = { isPublic: true };
+    const where: Record<string, unknown> = {};
+
+    if (mine) {
+      const userId = req.userId;
+      if (!userId) {
+        res.status(401).json({ message: "Authentication required for My Rooms" });
+        return;
+      }
+      where.OR = [
+        { ownerId: userId },
+        { members: { some: { userId } } },
+      ];
+    } else {
+      where.isPublic = true;
+    }
 
     if (search) {
       where.name = { contains: search, mode: "insensitive" };
@@ -295,11 +309,6 @@ router.post("/:roomId/leave", requireAuth, async (req, res) => {
 
     if (!room) {
       res.status(404).json({ message: "Room not found" });
-      return;
-    }
-
-    if (room.isLocked) {
-      res.status(403).json({ message: "Cannot leave a locked room" });
       return;
     }
 

@@ -83,6 +83,7 @@ export const roomListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(DEFAULTS.ROOM_LIST_PAGE_SIZE),
   search: z.string().optional(),
   tag: z.string().optional(),
+  mine: z.coerce.boolean().optional(),
 });
 
 export const createInvitationSchema = z.object({

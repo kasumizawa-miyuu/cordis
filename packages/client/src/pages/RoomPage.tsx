@@ -10,6 +10,7 @@ import ReadyPanel from "../components/ReadyPanel";
 import RoomSettings from "../components/RoomSettings";
 import InviteModal from "../components/InviteModal";
 import PluginPanel from "../components/PluginPanel";
+import api from "../services/api";
 
 export default function RoomPage() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -36,6 +37,15 @@ export default function RoomPage() {
   }
 
   const isOwner = room.ownerId === user?.id;
+
+  const handleLeave = async () => {
+    try {
+      await api.post(`/rooms/${roomId}/leave`);
+    } catch {
+      // proceed even if API fails
+    }
+    navigate("/lobby");
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 80px)" }}>
@@ -68,7 +78,7 @@ export default function RoomPage() {
             </button>
           )}
           <button
-            onClick={() => navigate("/lobby")}
+            onClick={handleLeave}
             style={{ padding: "8px 16px", color: "red" }}
           >
             Leave

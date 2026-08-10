@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
 export default function CreateRoomPage() {
@@ -119,9 +119,16 @@ export default function CreateRoomPage() {
           />
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit" disabled={loading} style={{ width: "100%", padding: 10 }}>
-          {loading ? "Creating..." : "Create Room"}
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button type="submit" disabled={loading} style={{ flex: 1, padding: 10 }}>
+            {loading ? "Creating..." : "Create Room"}
+          </button>
+          <Link to="/lobby" style={{ flex: 1 }}>
+            <button type="button" style={{ width: "100%", padding: 10, background: "#f0f0f0", border: "1px solid #ccc" }}>
+              Cancel
+            </button>
+          </Link>
+        </div>
       </form>
     </div>
   );
