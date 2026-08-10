@@ -37,7 +37,7 @@ export default function ChatPanel({ roomId }: Props) {
 
   const getSenderName = (senderId: string) => {
     const member = members.find((m) => m.userId === senderId);
-    return member?.user?.nickname || senderId.slice(0, 8);
+    return (member as any)?.nickname || member?.user?.nickname || senderId.slice(0, 8);
   };
 
   return (

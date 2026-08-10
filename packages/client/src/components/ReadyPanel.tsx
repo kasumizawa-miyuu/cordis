@@ -49,7 +49,7 @@ export default function ReadyPanel() {
               border: `1px solid ${m.isReady ? "#a5d6a7" : "#ffcc80"}`,
             }}
           >
-            {m.user?.nickname || m.userId.slice(0, 8)}: {m.isReady ? "Ready" : "Waiting"}
+            {(m as any).nickname || m.user?.nickname || m.userId.slice(0, 8)}: {m.isReady ? "Ready" : "Waiting"}
           </span>
         ))}
       </div>
