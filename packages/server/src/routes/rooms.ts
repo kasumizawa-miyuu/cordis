@@ -125,21 +125,41 @@ router.get("/:roomId", async (req, res) => {
       return;
     }
 
+    const members = await prisma.roomMember.findMany({
+      where: { roomId: room.id },
+      include: {
+        user: { select: { id: true, nickname: true, avatarUrl: true } },
+      },
+      orderBy: { joinedAt: "asc" },
+    });
+
     res.status(200).json({
-      id: room.id,
-      name: room.name,
-      description: room.description,
-      ownerId: room.ownerId,
-      ownerNickname: room.owner.nickname,
-      maxMembers: room.maxMembers,
-      memberCount: room._count.members,
-      isPublic: room.isPublic,
-      isLocked: room.isLocked,
-      requireReady: room.requireReady,
-      hasPassword: !!room.password,
-      tags: room.tags,
-      createdAt: room.createdAt,
-      updatedAt: room.updatedAt,
+      room: {
+        id: room.id,
+        name: room.name,
+        description: room.description,
+        ownerId: room.ownerId,
+        ownerNickname: room.owner.nickname,
+        maxMembers: room.maxMembers,
+        memberCount: room._count.members,
+        isPublic: room.isPublic,
+        isLocked: room.isLocked,
+        requireReady: room.requireReady,
+        hasPassword: !!room.password,
+        tags: room.tags,
+        createdAt: room.createdAt,
+        updatedAt: room.updatedAt,
+      },
+      members: members.map((m: typeof members[number]) => ({
+        id: m.id,
+        userId: m.userId,
+        nickname: (m as any).user?.nickname,
+        avatarUrl: (m as any).user?.avatarUrl,
+        role: m.role,
+        isReady: m.isReady,
+        isMuted: m.isMuted,
+        joinedAt: m.joinedAt,
+      })),
     });
   } catch (err) {
     const error = err as Error & { statusCode?: number };

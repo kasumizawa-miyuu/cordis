@@ -54,14 +54,14 @@ export default function LobbyPage() {
       const password = prompt("Enter room password:");
       if (!password) return;
       try {
-        await api.post("/rooms/join", { roomId, password });
+        await api.post(`/rooms/${roomId}/join`, { password });
         navigate(`/room/${roomId}`);
       } catch (err: any) {
         alert(err.response?.data?.message || "Failed to join room");
       }
     } else {
       try {
-        await api.post("/rooms/join", { roomId });
+        await api.post(`/rooms/${roomId}/join`);
         navigate(`/room/${roomId}`);
       } catch (err: any) {
         alert(err.response?.data?.message || "Failed to join room");
