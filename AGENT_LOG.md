@@ -189,3 +189,5 @@
 5. **Docker 多阶段构建中 npm workspaces 符号链接不跨 stage 传递：** 从 server-build 复制 node_modules 到 runtime 时，workspace 的符号链接（`@cordis/shared` → `../../packages/shared`）虽然在文件系统中存在，但 npm 的 workspace 解析机制需要 `npm ci` 来正确建立。解决方法是在 runtime stage 中也运行 `npm ci --omit=dev`。
 
 6. **tsc 编译应排除测试文件：** 测试文件可能引用仅在 devDependencies 中的包（如 `socket.io-client`），应通过 tsconfig 的 `exclude` 配置排除测试目录，避免生产构建时引入不必要的依赖。
+
+7. **SPEC 必须包含明确的 API 端点定义：** 原始 SPEC 只描述了功能行为（"加入房间：输入 roomId, password"），没有指定 URL 格式（`POST /api/rooms/:roomId/join` vs `POST /api/rooms/join`）和响应 JSON 结构。后端 subagent 和前端 subagent 各自做了不同解读，导致 join API 404 和 room detail 响应格式不匹配。补全了 SPEC §3.11 的完整 REST API 端点定义。这是本次项目最深刻的教训——SPEC 的模糊性直接导致实现错误，冷启动验证更能暴露这类问题。
